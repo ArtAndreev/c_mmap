@@ -66,6 +66,10 @@ int process_words(int file_desc, size_t file_size) {
 
     char* mapped_file = mmap(0, file_size, PROT_READ, MAP_PRIVATE, file_desc, 0);
     close(file_desc);
+    if (mapped_file == MAP_FAILED) {
+        fprintf(stderr, "Memory mapping error. Try again.\n");
+        return MEMORY_ERROR;
+    }
 
     int error_code = SUCCESS;
     if ((error_code = read_text(mapped_file, file_size, &words, &array_len, &words_count)) != SUCCESS) {
