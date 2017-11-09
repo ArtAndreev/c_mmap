@@ -49,7 +49,10 @@ int main(int argc, char** argv) {
     }
 
     struct stat file_stats;
-    stat(argv[1], &file_stats);
+    if (stat(argv[1], &file_stats) == -1) {
+        fprintf(stderr, "Error while getting file info. Try again.\n");
+        return FILE_ERROR;
+    }
     size_t file_size = (size_t)file_stats.st_size;
 
     return process_words(file_desc, file_size);
@@ -67,6 +70,7 @@ int process_words(int file_desc, size_t file_size) {
     char* mapped_file = mmap(0, file_size, PROT_READ, MAP_PRIVATE, file_desc, 0);
     close(file_desc);
     if (mapped_file == MAP_FAILED) {
+        free_words(words, words_count);
         fprintf(stderr, "Memory mapping error. Try again.\n");
         return MEMORY_ERROR;
     }
