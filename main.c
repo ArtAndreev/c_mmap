@@ -51,6 +51,7 @@ int main(int argc, char** argv) {
     struct stat file_stats;
     if (stat(argv[1], &file_stats) == -1) {
         fprintf(stderr, "Error while getting file info. Try again.\n");
+        close(file_desc);
         return FILE_ERROR;
     }
     size_t file_size = (size_t)file_stats.st_size;
@@ -63,6 +64,7 @@ int process_words(int file_desc, size_t file_size) {
     Word* words = malloc(array_len * sizeof(Word));
     if (!words) {
         fprintf(stderr, "Memory allocation error. Try again.\n");
+        close(file_desc);
         return MEMORY_ERROR;
     }
     size_t words_count = 0;
